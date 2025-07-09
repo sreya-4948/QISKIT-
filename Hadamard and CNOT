@@ -1,0 +1,16 @@
+from qiskit import *
+from qiskit_aer import AerSimulator
+circuit = QuantumCircuit(2,2)
+circuit.draw()
+%matplotlib inline
+circuit.draw(output='mpl')
+circuit.h(0) #Apply Hadamard gate to qubit 0
+circuit.draw(output='mpl')
+circuit.cx(0,1) #0-> control qubit, 1 -> target qubit
+circuit.measure([0,1],[0,1])
+circuit.draw(output='mpl')
+backend = AerSimulator() #creates a backend simulator using Qiskit Aer
+job = backend.run(circuit)
+result = job.result()
+from qiskit.visualization import plot_histogram
+plot_histogram(result.get_counts(circuit))
