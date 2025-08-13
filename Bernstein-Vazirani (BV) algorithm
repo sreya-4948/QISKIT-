@@ -1,0 +1,27 @@
+from qiskit import *
+from qiskit.visualization import plot_histogram
+%matplotlib inline
+secretNumber = '10001011'
+circuit = QuantumCircuit(len(secretNumber) + 1,len(secretNumber))
+circuit.h(range(len(secretNumber)))
+circuit.x(len(secretNumber))
+circuit.h(len(secretNumber))
+circuit.barrier()
+
+for index, one in enumerate(secretNumber[::-1]):
+    print(f"index {index} is {one}")
+    if one=="1":
+        circuit.cx(index, len(secretNumber))
+        
+
+circuit.barrier()
+circuit.h(range(len(secretNumber)))
+circuit.barrier()
+circuit.measure(range(len(secretNumber)),range(len(secretNumber)))
+circuit.draw(output='mpl')
+from qiskit_aer import Aer
+Aer.backends()
+qasm_simulator = Aer.get_backend('qasm_simulator')
+qasm_job = qasm_simulator.run(circuit,shots=1024).result()
+counts = qasm_job.get_counts()
+print("Counts:", counts)
